@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import AuthControls from "@/components/AuthControls";
+import { useAuth } from "@/context/AuthContext";
 import { GraduationCap, FlaskConical, Sigma, Atom, Stethoscope, ArrowRight, Clock } from "lucide-react";
 
 const EXAMS = [
@@ -14,8 +15,16 @@ const EXAMS = [
 
 export default function ExamHome() {
   const navigate = useNavigate();
+  const { user, login } = useAuth();
 
-  return (
+  const handleExamClick = (e) => {
+    if (!e.active) return;
+    if (!user) {
+      login();
+      return;
+    }
+    navigate(e.to);
+  };  return (
     <div className="min-h-screen bg-[#F8FAFC]">
       <Header />
 
@@ -31,7 +40,7 @@ export default function ExamHome() {
                 key={e.id}
                 data-testid={`exam-card-${e.id}`}
                 disabled={!e.active}
-                onClick={() => e.active && navigate(e.to)}
+                onClick={() => handleExamClick(e)}
                 style={{ animationDelay: `${i * 70}ms` }}
                 className={`animate-fade-up group flex w-full items-center gap-4 rounded-2xl border bg-white px-5 py-4 text-left shadow-sm transition-all duration-300 ${
                   e.active
