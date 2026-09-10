@@ -11,6 +11,7 @@ import { ACCENTS } from "@/lib/theme";
 import { BLUEPRINTS } from "@/lib/blueprints";
 import { resolveChapterBank } from "@/lib/chapterQuestionBanks";
 import { resolveSimilarity } from "@/lib/similarityBank";
+import { questionType, typeBadgeClass } from "@/lib/questionTypes";
 import { Textarea } from "@/components/ui/textarea";
 import { MathText } from "@/components/MathText";
 import { Atom, FlaskConical, Sigma, Dna, Cpu, BookOpen, Languages, ScrollText, ChevronLeft, ChevronRight, Pencil, Check, X, Star, FileQuestion, Lightbulb } from "lucide-react";
@@ -44,6 +45,7 @@ export default function ChapterQuestions() {
   const chapterName = chapterFromQuery || row?.chapter || "Chapter";
   const MARK_LABELS = { "6p4m": "6 / 4 Marks", numeric: "Numeric", mcq: "MCQ", fbk: "Fill in the Blanks" };
   const markLabel = MARK_LABELS[mark] || (/^\d+$/.test(String(mark)) ? `${mark} Marks` : String(mark).toUpperCase());
+  const qType = questionType(subjectId, chapterName, mark);
 
   const pages = resolveChapterBank({ subjectId, ch, label: chapterName, mark }) || [];
   const total = pages.length;
@@ -149,7 +151,9 @@ export default function ChapterQuestions() {
                               </span>
                               <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-900">{q.tag}</span>
                               <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">Easy</span>
-                              <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[10px] font-bold text-violet-700">Concept</span>
+                              {qType && (
+                                <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${typeBadgeClass(qType)}`}>{qType}</span>
+                              )}
                               {!isEditing && !q.image && (
                                 <button
                                   type="button"
@@ -261,7 +265,7 @@ export default function ChapterQuestions() {
       {zoom && <ImageZoomModal src={zoom.src} alt={zoom.alt} onClose={() => setZoom(null)} />}
       {showSim && (!unlocked && (subjectId === "chemistry" || mark === "mcq" || mark === "fbk" || (subjectId === "math" && (mark === "2m" || mark === "3m")))
         ? <FreeContentModal onClose={() => setShowSim(false)} />
-        : <SimilarityModal groups={simGroups} chapterName={chapterName} markLabel={markLabel} hideAnswer={!unlocked && subjectId === "physics" && /potential/i.test(chapterName)} onClose={() => setShowSim(false)} />
+        : <SimilarityModal groups={simGroups} chapterName={chapterName} markLabel={markLabel} qType={qType} hideAnswer={!unlocked && subjectId === "physics" && /potential/i.test(chapterName)} onClose={() => setShowSim(false)} />
       )}
     </div>
   );
