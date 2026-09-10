@@ -1,0 +1,78 @@
+import "@/App.css";
+import React from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { TeacherProvider } from "@/context/TeacherContext";
+import { AuthProvider } from "@/context/AuthContext";
+import { Toaster } from "@/components/ui/sonner";
+import SubjectBoard from "@/pages/SubjectBoard";
+import ExamHome from "@/pages/ExamHome";
+import SubjectDashboard from "@/pages/SubjectDashboard";
+import QuestionPatterns from "@/pages/QuestionPatterns";
+import Blueprint from "@/pages/Blueprint";
+import ChapterWise from "@/pages/ChapterWise";
+import ChapterDetail from "@/pages/ChapterDetail";
+import FullPaper from "@/pages/FullPaper";
+import PaperViewer from "@/pages/PaperViewer";
+import ExamDashboard from "@/pages/ExamDashboard";
+import ExamChapters from "@/pages/ExamChapters";
+import ExamPapers from "@/pages/ExamPapers";
+import NeetQuiz from "@/pages/NeetQuiz";
+import ChapterPractice from "@/pages/ChapterPractice";
+import FullPaperSolutions from "@/pages/FullPaperSolutions";
+import RelationsFunctions5M from "@/pages/RelationsFunctions5M";
+import ChapterQuestions from "@/pages/ChapterQuestions";
+import AuthCallback from "@/pages/AuthCallback";
+import AdminPage from "@/pages/AdminPage";
+import PhoneCaptureModal from "@/components/PhoneCaptureModal";
+
+function AppRouter() {
+  const location = useLocation();
+  // Process OAuth return FIRST (session_id lives in the URL fragment).
+  if (location.hash?.includes("session_id=")) {
+    return <AuthCallback />;
+  }
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<ExamHome />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/board" element={<SubjectBoard />} />
+        <Route path="/exam/:examId" element={<ExamDashboard />} />
+        <Route path="/exam/:examId/papers" element={<ExamPapers />} />
+        <Route path="/exam/:examId/quiz/:quizId" element={<NeetQuiz />} />
+        <Route path="/exam/:examId/paper/:paperId/solutions" element={<FullPaperSolutions />} />
+        <Route path="/exam/:examId/:subjectId/practice/:bankKey" element={<ChapterPractice />} />
+        <Route path="/exam/:examId/:subjectId/chapters" element={<ExamChapters />} />
+        <Route path="/exam/:examId/:subjectId/chapters/:cls" element={<ExamChapters />} />
+        <Route path="/subject/:subjectId" element={<SubjectDashboard />} />
+        <Route path="/subject/:subjectId/patterns" element={<QuestionPatterns />} />
+        <Route path="/subject/:subjectId/blueprint" element={<Blueprint />} />
+        <Route path="/subject/:subjectId/chapters" element={<ChapterWise />} />
+        <Route path="/subject/:subjectId/chapters/:ch" element={<ChapterDetail />} />
+        <Route path="/subject/:subjectId/chapters/:ch/relations-functions-5m" element={<RelationsFunctions5M />} />
+        <Route path="/subject/:subjectId/chapters/:ch/q/:mark" element={<ChapterQuestions />} />
+        <Route path="/subject/:subjectId/questions" element={<ChapterQuestions />} />
+        <Route path="/subject/:subjectId/papers" element={<FullPaper />} />
+        <Route path="/subject/:subjectId/papers/:paperId" element={<PaperViewer />} />
+      </Routes>
+      <PhoneCaptureModal />
+    </>
+  );
+}
+
+function App() {
+  return (
+    <div className="App">
+      <TeacherProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <AppRouter />
+          </BrowserRouter>
+          <Toaster position="top-right" richColors />
+        </AuthProvider>
+      </TeacherProvider>
+    </div>
+  );
+}
+
+export default App;

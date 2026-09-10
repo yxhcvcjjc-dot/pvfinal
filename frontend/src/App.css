@@ -1,0 +1,45 @@
+.App {
+    min-height: 100vh;
+}
+
+/* Shiny sweep button */
+.shine-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 45%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.85),
+        transparent
+    );
+    transform: skewX(-20deg);
+    animation: shine-sweep 2.4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes shine-sweep {
+    0% {
+        transform: translateX(-160%) skewX(-20deg);
+    }
+    60%,
+    100% {
+        transform: translateX(320%) skewX(-20deg);
+    }
+}
+
+@keyframes twinkle {
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.4) rotate(25deg);
+        opacity: 0.7;
+    }
+}
+
