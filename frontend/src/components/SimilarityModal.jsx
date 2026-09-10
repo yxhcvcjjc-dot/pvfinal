@@ -2,7 +2,7 @@ import React from "react";
 import { X, Star, Repeat, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { MathText } from "@/components/MathText";
 import FreeContentModal from "@/components/FreeContentModal";
-import { typeBadgeClass } from "@/lib/questionTypes";
+import { questionType, typeBadgeClass } from "@/lib/questionTypes";
 
 const DIFF_COLORS = {
   easy: "bg-emerald-100 text-emerald-700",
@@ -11,7 +11,7 @@ const DIFF_COLORS = {
 };
 
 // Full-screen (mobile-first) overlay listing questions grouped by "similarity".
-export default function SimilarityModal({ groups, chapterName, markLabel, qType = null, hideAnswer = false, onClose }) {
+export default function SimilarityModal({ groups, chapterName, markLabel, subjectId = null, mark = null, hideAnswer = false, onClose }) {
   const [open, setOpen] = React.useState({}); // { key: bool } -> answer revealed
   const [showFree, setShowFree] = React.useState(false); // locked chapters -> "Free for now" card
   const [gi, setGi] = React.useState(0); // current similar-group index
@@ -57,7 +57,9 @@ export default function SimilarityModal({ groups, chapterName, markLabel, qType 
             </div>
           ) : (
             <div className="space-y-5">
-              {[groups[Math.min(gi, total - 1)]].map((grp) => (
+              {[groups[Math.min(gi, total - 1)]].map((grp) => {
+                const grpType = questionType(subjectId, chapterName, mark, grp.sim);
+                return (
                 <section key={grp.sim}>
                   <div className="mb-2 flex items-center gap-2">
                     <span className="rounded-lg bg-gradient-to-r from-amber-400 to-yellow-500 px-2.5 py-1 text-xs font-black uppercase tracking-wide text-amber-950 shadow-sm">{grp.sim}</span>
@@ -76,8 +78,8 @@ export default function SimilarityModal({ groups, chapterName, markLabel, qType 
                               {q.difficulty}
                             </span>
                             <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-bold text-blue-700">{q.marks}</span>
-                            {qType && (
-                              <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${typeBadgeClass(qType)}`}>{qType}</span>
+                            {grpType && (
+                              <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${typeBadgeClass(grpType)}`}>{grpType}</span>
                             )}
                             {q.imp && (
                               <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-red-600 ring-1 ring-inset ring-red-300">
@@ -120,7 +122,8 @@ export default function SimilarityModal({ groups, chapterName, markLabel, qType 
                     })}
                   </div>
                 </section>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

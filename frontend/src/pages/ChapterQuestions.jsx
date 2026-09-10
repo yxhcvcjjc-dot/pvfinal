@@ -265,7 +265,7 @@ export default function ChapterQuestions() {
       {zoom && <ImageZoomModal src={zoom.src} alt={zoom.alt} onClose={() => setZoom(null)} />}
       {showSim && (!unlocked && (subjectId === "chemistry" || mark === "mcq" || mark === "fbk" || (subjectId === "math" && (mark === "2m" || mark === "3m")))
         ? <FreeContentModal onClose={() => setShowSim(false)} />
-        : <SimilarityModal groups={simGroups} chapterName={chapterName} markLabel={markLabel} qType={qType} hideAnswer={!unlocked && subjectId === "physics" && /potential/i.test(chapterName)} onClose={() => setShowSim(false)} />
+        : <SimilarityModal groups={simGroups} chapterName={chapterName} markLabel={markLabel} subjectId={subjectId} mark={mark} hideAnswer={!unlocked && subjectId === "physics" && /potential/i.test(chapterName)} onClose={() => setShowSim(false)} />
       )}
     </div>
   );
