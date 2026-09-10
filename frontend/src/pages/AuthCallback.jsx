@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { setToken } from "@/lib/authToken";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -25,7 +26,11 @@ export default function AuthCallback() {
           credentials: "include",
           headers: { "X-Session-ID": sessionId },
         });
-        if (res.ok) setUser(await res.json());
+        if (res.ok) {
+          const data = await res.json();
+          if (data.session_token) setToken(data.session_token);
+          setUser(data);
+        }
       } catch (e) { /* ignore */ }
       window.history.replaceState(null, "", "/");
       navigate("/", { replace: true });

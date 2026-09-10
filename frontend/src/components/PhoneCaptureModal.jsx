@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { authHeaders } from "@/lib/authToken";
 import { Phone } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -22,7 +23,7 @@ export default function PhoneCaptureModal() {
       const res = await fetch(`${API}/user/phone`, {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ phone: `+91 ${clean}` }),
       });
       if (res.ok) setUser(await res.json());

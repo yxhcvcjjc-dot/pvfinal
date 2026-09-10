@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Header } from "@/components/Header";
 import { Switch } from "@/components/ui/switch";
+import { authHeaders } from "@/lib/authToken";
 import { Users, ShieldCheck } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -16,7 +17,7 @@ export default function AdminPage() {
 
   const load = async () => {
     try {
-      const res = await fetch(`${API}/admin/users`, { credentials: "include" });
+      const res = await fetch(`${API}/admin/users`, { credentials: "include", headers: { ...authHeaders() } });
       if (res.ok) setData(await res.json());
     } catch (e) { /* ignore */ }
     setBusy(false);
@@ -34,7 +35,7 @@ export default function AdminPage() {
     try {
       await fetch(`${API}/admin/users/${u.user_id}/access`, {
         method: "PATCH", credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ access: next }),
       });
     } catch (e) { load(); }

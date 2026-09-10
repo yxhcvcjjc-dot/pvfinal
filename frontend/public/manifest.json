@@ -1,0 +1,15 @@
+{
+  "short_name": "Exams Made Easy",
+  "name": "Exams Made Easy — Exam Pattern & Analytics",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#2563EB",
+  "background_color": "#F8FAFC"
+}

@@ -155,7 +155,7 @@ backend:
 
   - task: "POST /api/auth/logout endpoint"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
@@ -164,6 +164,9 @@ backend:
       - working: false
         agent: "testing"
         comment: "❌ CRITICAL BUG: Logout endpoint only checks cookies for session_token, does not support Authorization header. When testing with 'Authorization: Bearer <token>' header, the endpoint returns 200 OK but does NOT delete the session from database. Subsequent /api/auth/me calls with the same token still return 200 with user data. The logout endpoint (lines 730-736) needs to be updated to also check Authorization header like get_current_user() does (lines 659-677)."
+      - working: true
+        agent: "testing"
+        comment: "✅ FIXED: Logout endpoint now properly supports Authorization Bearer header. Tested with Bearer token - endpoint returns 200 OK and successfully deletes session from database. Subsequent /api/auth/me calls with same token correctly return 401. The fix (lines 730-740) now checks both cookies and Authorization header, matching the behavior of get_current_user()."
 
   - task: "POST /api/auth/session endpoint"
     implemented: true
@@ -217,12 +220,11 @@ frontend:
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "POST /api/auth/logout endpoint"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -230,3 +232,5 @@ test_plan:
 agent_communication:
   - agent: "testing"
     message: "Completed comprehensive backend testing of authentication and admin endpoints. Test results: 12/13 tests passed (92.3% success rate). Found 1 critical bug in logout endpoint - it does not support Authorization header, only cookies. All other endpoints working correctly including auth/me, user/phone, admin/users, admin/users/access, and regression tests for questions and subjects endpoints. Test data was seeded directly in MongoDB and cleaned up after testing."
+  - agent: "testing"
+    message: "Re-tested all backend endpoints after logout fix. Test results: 13/13 tests passed (100% success rate). ✅ The critical logout bug has been FIXED - endpoint now properly supports Authorization Bearer header and correctly deletes sessions from database. All authentication flows working correctly: auth/me (with/without tokens), user/phone, admin/users (with proper authorization), admin/users/access, and logout. Regression tests also passing (questions and subjects endpoints). The authentication session/token persistence fix is complete and working as expected."

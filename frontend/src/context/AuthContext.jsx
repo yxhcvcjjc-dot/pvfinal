@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { getToken, clearToken, authHeaders } from "@/lib/authToken";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -12,7 +13,10 @@ export function AuthProvider({ children }) {
 
   const checkAuth = useCallback(async () => {
     try {
-      const res = await fetch(`${API}/auth/me`, { credentials: "include" });
+      const res = await fetch(`${API}/auth/me`, {
+        credentials: "include",
+        headers: { ...authHeaders() },
+      });
       if (!res.ok) throw new Error("not authenticated");
       setUser(await res.json());
     } catch (e) {
@@ -29,7 +33,14 @@ export function AuthProvider({ children }) {
   }, [checkAuth]);
 
   const logout = async () => {
-    try { await fetch(`${API}/auth/logout`, { method: "POST", credentials: "include" }); } catch (e) { /* ignore */ }
+    try {
+      await fetch(`${API}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+        headers: { ...authHeaders() },
+      });
+    } catch (e) { /* ignore */ }
+    clearToken();
     setUser(null);
   };
 

@@ -11,7 +11,7 @@ from pymongo import MongoClient
 import sys
 
 # Configuration
-BASE_URL = "https://line-parser.preview.emergentagent.com/api"
+BASE_URL = "https://pv7000-preview.preview.emergentagent.com/api"
 MONGO_URL = "mongodb://localhost:27017"
 DB_NAME = "test_database"
 
