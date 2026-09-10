@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Stethoscope, FlaskConical, FileText, Lock, BarChart3, ArrowRight } from "lucide-react";
 
@@ -89,6 +90,7 @@ const PAPERS_BY_EXAM = {
 export default function ExamPapers() {
   const { examId } = useParams();
   const navigate = useNavigate();
+  const { unlocked } = useAuth();
   const meta = EXAM_META[examId] || EXAM_META.neet;
   const Icon = meta.Icon;
   const papers = PAPERS_BY_EXAM[examId] || [];
@@ -135,7 +137,7 @@ export default function ExamPapers() {
               <h2 className="mb-2.5 text-sm font-extrabold text-slate-500">{g.year}</h2>
               <div className="space-y-3">
                 {g.items.map((p, i) => {
-                  const locked = !UNLOCKED_PAPERS.has(p.name);
+                  const locked = !unlocked && !UNLOCKED_PAPERS.has(p.name);
                   return (
                   <div
                     key={i}

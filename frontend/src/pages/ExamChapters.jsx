@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
+import { useAuth } from "@/context/AuthContext";
 import { EXAM_CHAPTERS, SUBJECT_META } from "@/lib/examChapters";
 import { Atom, ChevronRight, GraduationCap, Lock, FileText } from "lucide-react";
 
@@ -59,6 +60,7 @@ const CHAPTER_BANKS = {
 export default function ExamChapters() {
   const { examId, subjectId, cls } = useParams();
   const navigate = useNavigate();
+  const { unlocked } = useAuth();
   const meta = SUBJECT_META[subjectId] || { name: "Subject", Icon: Atom, bg: "bg-slate-700" };
   const Icon = meta.Icon;
   const data = EXAM_CHAPTERS[subjectId] || {};
@@ -88,9 +90,11 @@ export default function ExamChapters() {
           </div>
           <div className="space-y-2.5">
             {chapters.map((name, i) => {
-              const locked = UNLOCK_ALL_SUBJECTS.has(subjectId)
+              const locked = unlocked
                 ? false
-                : (LOCK_ALL_SUBJECTS.has(subjectId) || FORCE_LOCK.has(name) || FORCE_LOCK_BY_EXAM.has(`${examId}:${name}`) || (i >= 2 && !EXTRA_FREE.has(name)));
+                : (UNLOCK_ALL_SUBJECTS.has(subjectId)
+                ? false
+                : (LOCK_ALL_SUBJECTS.has(subjectId) || FORCE_LOCK.has(name) || FORCE_LOCK_BY_EXAM.has(`${examId}:${name}`) || (i >= 2 && !EXTRA_FREE.has(name))));
               const bankKey = CHAPTER_BANKS[`${examId}:${subjectId}:${name}`];
               const clickable = !locked && !!bankKey;
               return (

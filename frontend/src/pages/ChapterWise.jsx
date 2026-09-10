@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { getSubject } from "@/lib/api";
 import { Header } from "@/components/Header";
+import { useAuth } from "@/context/AuthContext";
 import { ACCENTS } from "@/lib/theme";
 import { BLUEPRINTS } from "@/lib/blueprints";
 import { Atom, FlaskConical, Sigma, Dna, Cpu, BookOpen, Languages, ScrollText, Lock } from "lucide-react";
@@ -23,6 +24,7 @@ export default function ChapterWise() {
   const { subjectId } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { unlocked } = useAuth();
 
   const { data: subject } = useQuery({
     queryKey: ["subject", subjectId],
@@ -44,8 +46,8 @@ export default function ChapterWise() {
         {chapters.length ? (
           <div data-testid="chapterwise-list" className="space-y-3">
             {chapters.map((c, i) => {
-              // Only the 1st chapter is unlocked; every other chapter is locked.
-              const isFree = i === 0;
+              // Chapter is free when access is unlocked, otherwise only the 1st chapter.
+              const isFree = unlocked || i === 0;
               return (
                 <button
                   key={c.ch}
