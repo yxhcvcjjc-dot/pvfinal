@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import AuthControls from "@/components/AuthControls";
-import { useAuth } from "@/context/AuthContext";
 import { GraduationCap, FlaskConical, Sigma, Atom, Stethoscope, ArrowRight, Clock } from "lucide-react";
 
 const EXAMS = [
@@ -15,16 +14,13 @@ const EXAMS = [
 
 export default function ExamHome() {
   const navigate = useNavigate();
-  const { user, login } = useAuth();
 
   const handleExamClick = (e) => {
     if (!e.active) return;
-    if (!user) {
-      login();
-      return;
-    }
     navigate(e.to);
-  };  return (
+  };
+
+  return (
     <div className="min-h-screen bg-[#F8FAFC]">
       <Header />
 
