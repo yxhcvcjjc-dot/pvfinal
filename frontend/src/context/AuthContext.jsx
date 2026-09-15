@@ -52,7 +52,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     user, setUser, loading, checkAuth, logout, login,
-    unlocked: !!user?.access,
+    unlocked: true,
     isOwner: !!user?.is_owner,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
